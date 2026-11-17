@@ -56,7 +56,7 @@ def get_db_connection(database=None):
             "host": MYSQL_HOST,
             "user": MYSQL_USER,
             "password": MYSQL_PASSWORD,
-            "port": 3306
+            "port": MYSQL_PORT
         }
 
         if database:
