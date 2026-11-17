@@ -3,16 +3,15 @@ import mysql.connector
 from functools import wraps
 
 app = Flask(__name__)
-app.secret_key = "hospital_secret_key_123"
+import os
 
-# =========================================================
-# MYSQL CONFIGURATION
-# =========================================================
+app.secret_key = os.environ.get("SECRET_KEY")
 
-MYSQL_HOST = "localhost"
-MYSQL_USER = "root"
-MYSQL_PASSWORD = "MySQL@123"
-MYSQL_DATABASE = "hospital_db"
+MYSQL_HOST = os.environ.get("MYSQL_HOST")
+MYSQL_USER = os.environ.get("MYSQL_USER")
+MYSQL_PASSWORD = os.environ.get("MYSQL_PASSWORD")
+MYSQL_DATABASE = os.environ.get("MYSQL_DATABASE", "hospital_db")
+MYSQL_PORT = int(os.environ.get("MYSQL_PORT", 3306))
 
 # =========================================================
 # CONSTANTS
