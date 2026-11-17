@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Management System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #333;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 240px;
+            height: 100vh;
+            background: #123c69;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 13px 15px;
+            margin: 6px 0;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        .sidebar a:hover {
+            background: #1e5d91;
+        }
+
+        /* MAIN */
+        .main {
+            margin-left: 240px;
+            padding: 25px;
+        }
+
+        .topbar {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+        }
+
+        .topbar h1 {
+            color: #123c69;
+            margin-bottom: 5px;
+        }
+
+        /* SECTIONS */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* CARDS */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+        }
+
+        .card h3 {
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 28px;
+            font-weight: bold;
+            color: #123c69;
+        }
+
+        /* BOX */
+        .box {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+        }
+
+        .box h2 {
+            color: #123c69;
+            margin-bottom: 18px;
+        }
+
+        /* FORMS */
+        form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+            gap: 12px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            padding: 11px 18px;
+            border: none;
+            border-radius: 6px;
+            background: #123c69;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1e5d91;
+        }
+
+        /* SEARCH */
+        .search-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .search-form input {
+            flex: 1;
+        }
+
+        /* TABLE */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        th {
+            background: #123c69;
+            color: white;
+        }
+
+        tr:hover {
+            background: #f5f8fc;
+        }
+
+        /* BUTTONS */
+        .btn-edit {
+            background: #f39c12;
+            margin-right: 5px;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+        }
+
+        .btn-edit:hover {
+            background: #d68910;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        /* STATUS */
+        .status {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .available {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .occupied {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,.55);
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 650px;
+            margin: 6% auto;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        .modal-content h2 {
+            color: #123c69;
+            margin-bottom: 20px;
+        }
+
+        .close {
+            float: right;
+            font-size: 28px;
+            cursor: pointer;
+            color: #777;
+        }
+
+        .close:hover {
+            color: red;
+        }
+
+        /* FLASH */
+        .flash {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        @media(max-width:800px) {
+
+            .sidebar {
+                width: 190px;
+            }
+
+            .main {
+                margin-left: 190px;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================= SIDEBAR ================= -->
+
+<div class="sidebar">
+
+    <h2>🏥 HMS</h2>
+
+    <a onclick="showSection('dashboard')">
+        📊 Dashboard
+    </a>
+
+    <a onclick="showSection('patients')">
+        👤 Patients
+    </a>
+
+    <a onclick="showSection('doctors')">
+        👨‍⚕️ Doctors
+    </a>
+
+    <a onclick="showSection('appointments')">
+        📅 Appointments
+    </a>
+
+    <a onclick="showSection('beds')">
+        🛏️ Rooms & Beds
+    </a>
+
+    <a href="{{ url_for('logout') }}">
+        🚪 Logout
+    </a>
+
+</div>
+
+
+<!-- ================= MAIN ================= -->
+
+<div class="main">
+
+    <div class="topbar">
+
+        <h1>Hospital Management System</h1>
+
+        <p>
+            Manage patients, doctors, appointments, rooms and beds
+        </p>
+
+    </div>
+
+
+    <!-- FLASH MESSAGE -->
+
+    {% with messages = get_flashed_messages() %}
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="flash">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- ================================================= -->
+    <!-- DASHBOARD -->
+    <!-- ================================================= -->
+
+    <div id="dashboard" class="section active">
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>Total Patients</h3>
+                <p>{{ total_patient_count }}</p>
+            </div>
+
+            <div class="card">
+                <h3>Active Patients</h3>
+                <p>{{ active_patient_count }}</p>
+            </div>
+
+            <div class="card">
+                <h3>Total Doctors</h3>
+                <p>{{ total_doctor_count }}</p>
+            </div>
+
+            <div class="card">
+                <h3>Available Doctors</h3>
+                <p>{{ available_doctor_count }}</p>
+            </div>
+
+            <div class="card">
+                <h3>Total Appointments</h3>
+                <p>{{ total_appointment_count }}</p>
+            </div>
+
+            <div class="card">
+                <h3>Scheduled</h3>
+                <p>{{ scheduled_appointment_count }}</p>
+            </div>
+
+            <div class="card">
+                <h3>Total Beds</h3>
+                <p>{{ total_bed_count }}</p>
+            </div>
+
+            <div class="card">
+                <h3>Available Beds</h3>
+                <p>{{ available_bed_count }}</p>
+            </div>
+
+            <div class="card">
+                <h3>Occupied Beds</h3>
+                <p>{{ occupied_bed_count }}</p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- PATIENTS -->
+    <!-- ================================================= -->
+
+    <div id="patients" class="section">
+
+        <div class="box">
+
+            <h2>👤 Add Patient</h2>
+
+            <form action="{{ url_for('add_patient') }}" method="POST">
+
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Patient Name"
+                    required
+                >
+
+                <input
+                    type="number"
+                    name="age"
+                    placeholder="Age"
+                    required
+                >
+
+                <select name="gender" required>
+
+                    <option value="">
+                        Select Gender
+                    </option>
+
+                    <option value="Male">
+                        Male
+                    </option>
+
+                    <option value="Female">
+                        Female
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+                <input
+                    type="text"
+                    name="phone"
+                    placeholder="Phone"
+                >
+
+                <input
+                    type="text"
+                    name="address"
+                    placeholder="Address"
+                >
+
+                <input
+                    type="text"
+                    name="disease"
+                    placeholder="Disease"
+                >
+
+                <select name="status">
+
+                    <option value="Active">
+                        Active
+                    </option>
+
+                    <option value="Discharged">
+                        Discharged
+                    </option>
+
+                </select>
+
+                <button type="submit">
+                    Add Patient
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <div class="box">
+
+            <h2>Patient Records</h2>
+
+            <form class="search-form" method="GET">
+
+                <input
+                    type="text"
+                    name="patient_search"
+                    placeholder="Search patient..."
+                    value="{{ patient_search }}"
+                >
+
+                <button type="submit">
+                    Search
+                </button>
+
+            </form>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Phone</th>
+                        <th>Address</th>
+                        <th>Disease</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+
+                    {% for patient in patients %}
+
+                    <tr>
+
+                        <td>{{ patient.patient_id }}</td>
+
+                        <td>{{ patient.name }}</td>
+
+                        <td>{{ patient.age }}</td>
+
+                        <td>{{ patient.gender }}</td>
+
+                        <td>{{ patient.phone }}</td>
+
+                        <td>{{ patient.address }}</td>
+
+                        <td>{{ patient.disease }}</td>
+
+                        <td>
+                            <span class="status
+                            {% if patient.status == 'Active' %}
+                                available
+                            {% else %}
+                                occupied
+                            {% endif %}">
+                                {{ patient.status }}
+                            </span>
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="btn-edit"
+                                onclick="openPatientModal(
+                                    '{{ patient.patient_id }}',
+                                    '{{ patient.name }}',
+                                    '{{ patient.age }}',
+                                    '{{ patient.gender }}',
+                                    '{{ patient.phone }}',
+                                    '{{ patient.address }}',
+                                    '{{ patient.disease }}',
+                                    '{{ patient.status }}'
+                                )"
+                            >
+                                Edit
+                            </button>
+
+                            <a
+                                href="{{ url_for('delete_patient', patient_id=patient.patient_id) }}"
+                                onclick="return confirm('Delete this patient?')"
+                            >
+                                <button type="button" class="btn-delete">
+                                    Delete
+                                </button>
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- DOCTORS -->
+    <!-- ================================================= -->
+
+    <div id="doctors" class="section">
+
+        <div class="box">
+
+            <h2>👨‍⚕️ Add Doctor</h2>
+
+            <form action="{{ url_for('add_doctor') }}" method="POST">
+
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Doctor Name"
+                    required
+                >
+
+                <input
+                    type="text"
+                    name="specialization"
+                    placeholder="Specialization"
+                    required
+                >
+
+                <select name="department" required>
+
+                    <option value="">
+                        Select Department
+                    </option>
+
+                    {% for department in departments %}
+
+                    <option value="{{ department }}">
+                        {{ department }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <input
+                    type="text"
+                    name="phone"
+                    placeholder="Phone"
+                >
+
+                <input
+                    type="number"
+                    name="experience"
+                    placeholder="Experience (Years)"
+                >
+
+                <select name="availability">
+
+                    <option value="Available">
+                        Available
+                    </option>
+
+                    <option value="On Leave">
+                        On Leave
+                    </option>
+
+                </select>
+
+                <button type="submit">
+                    Add Doctor
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <div class="box">
+
+            <h2>Doctor Records</h2>
+
+            <form class="search-form" method="GET">
+
+                <input
+                    type="text"
+                    name="doctor_search"
+                    placeholder="Search doctor..."
+                    value="{{ doctor_search }}"
+                >
+
+                <button type="submit">
+                    Search
+                </button>
+
+            </form>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Specialization</th>
+                        <th>Department</th>
+                        <th>Phone</th>
+                        <th>Experience</th>
+                        <th>Availability</th>
+                        <th>Actions</th>
+                    </tr>
+
+                    {% for doctor in doctors %}
+
+                    <tr>
+
+                        <td>{{ doctor.doctor_id }}</td>
+
+                        <td>{{ doctor.name }}</td>
+
+                        <td>{{ doctor.specialization }}</td>
+
+                        <td>{{ doctor.department }}</td>
+
+                        <td>{{ doctor.phone }}</td>
+
+                        <td>{{ doctor.experience }} years</td>
+
+                        <td>
+
+                            <span class="status
+                            {% if doctor.availability == 'Available' %}
+                                available
+                            {% else %}
+                                occupied
+                            {% endif %}">
+
+                                {{ doctor.availability }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="btn-edit"
+                                onclick="openDoctorModal(
+                                    '{{ doctor.doctor_id }}',
+                                    '{{ doctor.name }}',
+                                    '{{ doctor.specialization }}',
+                                    '{{ doctor.department }}',
+                                    '{{ doctor.phone }}',
+                                    '{{ doctor.experience }}',
+                                    '{{ doctor.availability }}'
+                                )"
+                            >
+                                Edit
+                            </button>
+
+                            <a
+                                href="{{ url_for('delete_doctor', doctor_id=doctor.doctor_id) }}"
+                                onclick="return confirm('Delete this doctor?')"
+                            >
+                                <button type="button" class="btn-delete">
+                                    Delete
+                                </button>
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- APPOINTMENTS -->
+    <!-- ================================================= -->
+
+    <div id="appointments" class="section">
+
+        <div class="box">
+
+            <h2>📅 Add Appointment</h2>
+
+            <form action="{{ url_for('add_appointment') }}" method="POST">
+
+                <select name="patient_id" required>
+
+                    <option value="">
+                        Select Patient
+                    </option>
+
+                    {% for patient in patients %}
+
+                    <option value="{{ patient.patient_id }}">
+                        {{ patient.name }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+
+                <select name="doctor_id" required>
+
+                    <option value="">
+                        Select Doctor
+                    </option>
+
+                    {% for doctor in doctors %}
+
+                    <option value="{{ doctor.doctor_id }}">
+                        {{ doctor.name }} - {{ doctor.department }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+
+                <input
+                    type="date"
+                    name="appointment_date"
+                    required
+                >
+
+                <input
+                    type="time"
+                    name="appointment_time"
+                    required
+                >
+
+                <input
+                    type="text"
+                    name="reason"
+                    placeholder="Reason"
+                >
+
+                <select name="status">
+
+                    <option value="Scheduled">
+                        Scheduled
+                    </option>
+
+                    <option value="Completed">
+                        Completed
+                    </option>
+
+                    <option value="Cancelled">
+                        Cancelled
+                    </option>
+
+                </select>
+
+                <button type="submit">
+                    Add Appointment
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <div class="box">
+
+            <h2>Appointment Records</h2>
+
+            <form class="search-form" method="GET">
+
+                <input
+                    type="text"
+                    name="appointment_search"
+                    placeholder="Search appointment..."
+                    value="{{ appointment_search }}"
+                >
+
+                <button type="submit">
+                    Search
+                </button>
+
+            </form>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Department</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+
+                    {% for appointment in appointments %}
+
+                    <tr>
+
+                        <td>
+                            {{ appointment.appointment_id }}
+                        </td>
+
+                        <td>
+                            {{ appointment.patient_name }}
+                        </td>
+
+                        <td>
+                            {{ appointment.doctor_name }}
+                        </td>
+
+                        <td>
+                            {{ appointment.department }}
+                        </td>
+
+                        <td>
+                            {{ appointment.appointment_date }}
+                        </td>
+
+                        <td>
+                            {{ appointment.appointment_time }}
+                        </td>
+
+                        <td>
+                            {{ appointment.reason }}
+                        </td>
+
+                        <td>
+
+                            <span class="status
+                            {% if appointment.status == 'Scheduled' %}
+                                available
+                            {% else %}
+                                occupied
+                            {% endif %}">
+
+                                {{ appointment.status }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="btn-edit"
+                                onclick="openAppointmentModal(
+                                    '{{ appointment.appointment_id }}',
+                                    '{{ appointment.patient_id }}',
+                                    '{{ appointment.doctor_id }}',
+                                    '{{ appointment.appointment_date }}',
+                                    '{{ appointment.appointment_time }}',
+                                    '{{ appointment.reason }}',
+                                    '{{ appointment.status }}'
+                                )"
+                            >
+                                Edit
+                            </button>
+
+                            <a
+                                href="{{ url_for('delete_appointment', appointment_id=appointment.appointment_id) }}"
+                                onclick="return confirm('Delete this appointment?')"
+                            >
+                                <button type="button" class="btn-delete">
+                                    Delete
+                                </button>
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- ROOMS & BEDS -->
+    <!-- ================================================= -->
+
+    <div id="beds" class="section">
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>Total Beds</h3>
+                <p>{{ total_bed_count }}</p>
+            </div>
+
+            <div class="card">
+                <h3>Available Beds</h3>
+                <p>{{ available_bed_count }}</p>
+            </div>
+
+            <div class="card">
+                <h3>Occupied Beds</h3>
+                <p>{{ occupied_bed_count }}</p>
+            </div>
+
+        </div>
+
+
+        <!-- ADD BED -->
+
+        <div class="box">
+
+            <h2>🛏️ Add Room / Bed</h2>
+
+            <form action="{{ url_for('add_bed') }}" method="POST">
+
+                <input
+                    type="text"
+                    name="room_number"
+                    placeholder="Room Number"
+                    required
+                >
+
+                <input
+                    type="text"
+                    name="bed_number"
+                    placeholder="Bed Number"
+                    required
+                >
+
+                <select name="room_type" required>
+
+                    <option value="">
+                        Select Room Type
+                    </option>
+
+                    {% for room_type in room_types %}
+
+                    <option value="{{ room_type }}">
+                        {{ room_type }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+
+                <select name="patient_id">
+
+                    <option value="">
+                        No Patient
+                    </option>
+
+                    {% for patient in patients %}
+
+                    <option value="{{ patient.patient_id }}">
+                        {{ patient.name }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+
+                <select name="status">
+
+                    {% for bed_status in bed_statuses %}
+
+                    <option value="{{ bed_status }}">
+                        {{ bed_status }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+
+                <button type="submit">
+                    Add Bed
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- BED TABLE -->
+
+        <div class="box">
+
+            <h2>🏥 Rooms & Beds</h2>
+
+            <form class="search-form" method="GET">
+
+                <input
+                    type="text"
+                    name="bed_search"
+                    placeholder="Search room, bed, patient..."
+                    value="{{ bed_search }}"
+                >
+
+                <button type="submit">
+                    Search
+                </button>
+
+            </form>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <tr>
+                        <th>Bed ID</th>
+                        <th>Room Number</th>
+                        <th>Bed Number</th>
+                        <th>Room Type</th>
+                        <th>Patient</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+
+
+                    {% for bed in beds %}
+
+                    <tr>
+
+                        <td>
+                            {{ bed.bed_id }}
+                        </td>
+
+                        <td>
+                            {{ bed.room_number }}
+                        </td>
+
+                        <td>
+                            {{ bed.bed_number }}
+                        </td>
+
+                        <td>
+                            {{ bed.room_type }}
+                        </td>
+
+                        <td>
+
+                            {% if bed.patient_name %}
+                                {{ bed.patient_name }}
+                            {% else %}
+                                No Patient
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <span class="status
+                            {% if bed.status == 'Available' %}
+                                available
+                            {% else %}
+                                occupied
+                            {% endif %}">
+
+                                {{ bed.status }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="btn-edit"
+                                onclick="openBedModal(
+                                    '{{ bed.bed_id }}',
+                                    '{{ bed.room_number }}',
+                                    '{{ bed.bed_number }}',
+                                    '{{ bed.room_type }}',
+                                    '{{ bed.patient_id or '' }}',
+                                    '{{ bed.status }}'
+                                )"
+                            >
+                                Edit
+                            </button>
+
+
+                            <a
+                                href="{{ url_for('delete_bed', bed_id=bed.bed_id) }}"
+                                onclick="return confirm('Delete this bed?')"
+                            >
+                                <button type="button" class="btn-delete">
+                                    Delete
+                                </button>
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+
+                        <td colspan="7" style="text-align:center;">
+                            No beds found.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- PATIENT EDIT MODAL -->
+<!-- ================================================= -->
+
+<div id="patientModal" class="modal">
+
+    <div class="modal-content">
+
+        <span
+            class="close"
+            onclick="closeModal('patientModal')"
+        >
+            &times;
+        </span>
+
+        <h2>Edit Patient</h2>
+
+        <form id="patientEditForm" method="POST">
+
+            <input
+                type="text"
+                id="patientName"
+                name="name"
+                placeholder="Name"
+                required
+            >
+
+            <input
+                type="number"
+                id="patientAge"
+                name="age"
+                placeholder="Age"
+                required
+            >
+
+            <select id="patientGender" name="gender">
+
+                <option value="Male">Male</option>
+
+                <option value="Female">Female</option>
+
+                <option value="Other">Other</option>
+
+            </select>
+
+            <input
+                type="text"
+                id="patientPhone"
+                name="phone"
+                placeholder="Phone"
+            >
+
+            <input
+                type="text"
+                id="patientAddress"
+                name="address"
+                placeholder="Address"
+            >
+
+            <input
+                type="text"
+                id="patientDisease"
+                name="disease"
+                placeholder="Disease"
+            >
+
+            <select id="patientStatus" name="status">
+
+                <option value="Active">
+                    Active
+                </option>
+
+                <option value="Discharged">
+                    Discharged
+                </option>
+
+            </select>
+
+            <button type="submit">
+                Update Patient
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- DOCTOR EDIT MODAL -->
+<!-- ================================================= -->
+
+<div id="doctorModal" class="modal">
+
+    <div class="modal-content">
+
+        <span
+            class="close"
+            onclick="closeModal('doctorModal')"
+        >
+            &times;
+        </span>
+
+        <h2>Edit Doctor</h2>
+
+        <form id="doctorEditForm" method="POST">
+
+            <input
+                type="text"
+                id="doctorName"
+                name="name"
+                placeholder="Doctor Name"
+                required
+            >
+
+            <input
+                type="text"
+                id="doctorSpecialization"
+                name="specialization"
+                placeholder="Specialization"
+                required
+            >
+
+            <select id="doctorDepartment" name="department">
+
+                {% for department in departments %}
+
+                <option value="{{ department }}">
+                    {{ department }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+            <input
+                type="text"
+                id="doctorPhone"
+                name="phone"
+                placeholder="Phone"
+            >
+
+            <input
+                type="number"
+                id="doctorExperience"
+                name="experience"
+                placeholder="Experience"
+            >
+
+            <select id="doctorAvailability" name="availability">
+
+                <option value="Available">
+                    Available
+                </option>
+
+                <option value="On Leave">
+                    On Leave
+                </option>
+
+            </select>
+
+            <button type="submit">
+                Update Doctor
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- APPOINTMENT EDIT MODAL -->
+<!-- ================================================= -->
+
+<div id="appointmentModal" class="modal">
+
+    <div class="modal-content">
+
+        <span
+            class="close"
+            onclick="closeModal('appointmentModal')"
+        >
+            &times;
+        </span>
+
+        <h2>Edit Appointment</h2>
+
+        <form id="appointmentEditForm" method="POST">
+
+            <select id="appointmentPatient" name="patient_id">
+
+                {% for patient in patients %}
+
+                <option value="{{ patient.patient_id }}">
+                    {{ patient.name }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <select id="appointmentDoctor" name="doctor_id">
+
+                {% for doctor in doctors %}
+
+                <option value="{{ doctor.doctor_id }}">
+                    {{ doctor.name }} - {{ doctor.department }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <input
+                type="date"
+                id="appointmentDate"
+                name="appointment_date"
+                required
+            >
+
+            <input
+                type="time"
+                id="appointmentTime"
+                name="appointment_time"
+                required
+            >
+
+            <input
+                type="text"
+                id="appointmentReason"
+                name="reason"
+                placeholder="Reason"
+            >
+
+            <select id="appointmentStatus" name="status">
+
+                <option value="Scheduled">
+                    Scheduled
+                </option>
+
+                <option value="Completed">
+                    Completed
+                </option>
+
+                <option value="Cancelled">
+                    Cancelled
+                </option>
+
+            </select>
+
+            <button type="submit">
+                Update Appointment
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- BED EDIT MODAL -->
+<!-- ================================================= -->
+
+<div id="bedModal" class="modal">
+
+    <div class="modal-content">
+
+        <span
+            class="close"
+            onclick="closeModal('bedModal')"
+        >
+            &times;
+        </span>
+
+        <h2>🛏️ Edit Bed</h2>
+
+        <form id="bedEditForm" method="POST">
+
+            <input
+                type="text"
+                id="bedRoomNumber"
+                name="room_number"
+                placeholder="Room Number"
+                required
+            >
+
+            <input
+                type="text"
+                id="bedNumber"
+                name="bed_number"
+                placeholder="Bed Number"
+                required
+            >
+
+            <select id="bedRoomType" name="room_type">
+
+                {% for room_type in room_types %}
+
+                <option value="{{ room_type }}">
+                    {{ room_type }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <select id="bedPatient" name="patient_id">
+
+                <option value="">
+                    No Patient
+                </option>
+
+                {% for patient in patients %}
+
+                <option value="{{ patient.patient_id }}">
+                    {{ patient.name }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <select id="bedStatus" name="status">
+
+                {% for bed_status in bed_statuses %}
+
+                <option value="{{ bed_status }}">
+                    {{ bed_status }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <button type="submit">
+                Update Bed
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- JAVASCRIPT -->
+<!-- ================================================= -->
+
+<script>
+
+    /* SHOW SECTION */
+
+    function showSection(sectionId) {
+
+        document.querySelectorAll(".section").forEach(function(section) {
+
+            section.classList.remove("active");
+
+        });
+
+        document.getElementById(sectionId).classList.add("active");
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
+
+
+    /* CLOSE MODAL */
+
+    function closeModal(modalId) {
+
+        document.getElementById(modalId).style.display = "none";
+
+    }
+
+
+    /* CLOSE WHEN CLICKING OUTSIDE */
+
+    window.onclick = function(event) {
+
+        if (event.target.classList.contains("modal")) {
+
+            event.target.style.display = "none";
+
+        }
+
+    };
+
+
+    /* PATIENT EDIT */
+
+    function openPatientModal(
+        id,
+        name,
+        age,
+        gender,
+        phone,
+        address,
+        disease,
+        status
+    ) {
+
+        document.getElementById("patientModal").style.display =
+            "block";
+
+        document.getElementById("patientEditForm").action =
+            "/update_patient/" + id;
+
+        document.getElementById("patientName").value = name;
+
+        document.getElementById("patientAge").value = age;
+
+        document.getElementById("patientGender").value = gender;
+
+        document.getElementById("patientPhone").value = phone;
+
+        document.getElementById("patientAddress").value = address;
+
+        document.getElementById("patientDisease").value = disease;
+
+        document.getElementById("patientStatus").value = status;
+
+    }
+
+
+    /* DOCTOR EDIT */
+
+    function openDoctorModal(
+        id,
+        name,
+        specialization,
+        department,
+        phone,
+        experience,
+        availability
+    ) {
+
+        document.getElementById("doctorModal").style.display =
+            "block";
+
+        document.getElementById("doctorEditForm").action =
+            "/update_doctor/" + id;
+
+        document.getElementById("doctorName").value = name;
+
+        document.getElementById("doctorSpecialization").value =
+            specialization;
+
+        document.getElementById("doctorDepartment").value =
+            department;
+
+        document.getElementById("doctorPhone").value =
+            phone;
+
+        document.getElementById("doctorExperience").value =
+            experience;
+
+        document.getElementById("doctorAvailability").value =
+            availability;
+
+    }
+
+
+    /* APPOINTMENT EDIT */
+
+    function openAppointmentModal(
+        id,
+        patientId,
+        doctorId,
+        date,
+        time,
+        reason,
+        status
+    ) {
+
+        document.getElementById("appointmentModal").style.display =
+            "block";
+
+        document.getElementById("appointmentEditForm").action =
+            "/update_appointment/" + id;
+
+        document.getElementById("appointmentPatient").value =
+            patientId;
+
+        document.getElementById("appointmentDoctor").value =
+            doctorId;
+
+        document.getElementById("appointmentDate").value =
+            date;
+
+        document.getElementById("appointmentTime").value =
+            time;
+
+        document.getElementById("appointmentReason").value =
+            reason;
+
+        document.getElementById("appointmentStatus").value =
+            status;
+
+    }
+
+
+    /* BED EDIT */
+
+    function openBedModal(
+        id,
+        roomNumber,
+        bedNumber,
+        roomType,
+        patientId,
+        status
+    ) {
+
+        document.getElementById("bedModal").style.display =
+            "block";
+
+        document.getElementById("bedEditForm").action =
+            "/update_bed/" + id;
+
+        document.getElementById("bedRoomNumber").value =
+            roomNumber;
+
+        document.getElementById("bedNumber").value =
+            bedNumber;
+
+        document.getElementById("bedRoomType").value =
+            roomType;
+
+        document.getElementById("bedPatient").value =
+            patientId;
+
+        document.getElementById("bedStatus").value =
+            status;
+
+    }
+
+</script>
+
+</body>
+</html>

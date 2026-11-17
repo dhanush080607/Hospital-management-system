@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Hospital Management Dashboard</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+        }
+
+        .header {
+            background: #1976d2;
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .logout {
+            background: #dc3545;
+            color: white;
+            padding: 10px 18px;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 35px;
+        }
+
+        .welcome {
+            margin-bottom: 30px;
+        }
+
+        .welcome h2 {
+            color: #333;
+        }
+
+        .welcome p {
+            color: #666;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .card h3 {
+            margin: 0;
+            color: #555;
+        }
+
+        .number {
+            font-size: 40px;
+            font-weight: bold;
+            color: #1976d2;
+            margin-top: 15px;
+        }
+
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .menu a {
+            display: block;
+            background: white;
+            padding: 25px;
+            text-align: center;
+            text-decoration: none;
+            color: #1976d2;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            transition: 0.2s;
+        }
+
+        .menu a:hover {
+            transform: translateY(-3px);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #777;
+        }
+
+        @media (max-width: 700px) {
+
+            .cards,
+            .menu {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 15px 20px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<div class="header">
+
+    <h1>🏥 Hospital Management System</h1>
+
+    <a
+        href="{{ url_for('logout') }}"
+        class="logout">
+        Logout
+    </a>
+
+</div>
+
+
+<div class="container">
+
+
+    <div class="welcome">
+
+        <h2>Admin Dashboard</h2>
+
+        <p>
+            Manage patients, doctors and appointments from one place.
+        </p>
+
+    </div>
+
+
+    <!-- STATISTICS -->
+
+    <div class="cards">
+
+        <div class="card">
+
+            <h3>👥 Total Patients</h3>
+
+            <div class="number">
+                {{ patient_count }}
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>👨‍⚕️ Total Doctors</h3>
+
+            <div class="number">
+                {{ doctor_count }}
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>📅 Total Appointments</h3>
+
+            <div class="number">
+                {{ appointment_count }}
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- MENU -->
+
+    <div class="menu">
+
+        <a href="{{ url_for('patient_management') }}">
+            👥 Patient Management
+        </a>
+
+        <a href="{{ url_for('doctor_management') }}">
+            👨‍⚕️ Doctor Management
+        </a>
+
+        <a href="{{ url_for('appointment_management') }}">
+            📅 Appointment Management
+        </a>
+
+    </div>
+
+
+    <div class="footer">
+
+        <p>
+            Hospital Management System © 2026
+        </p>
+
+    </div>
+
+
+</div>
+
+</body>
+
+</html>

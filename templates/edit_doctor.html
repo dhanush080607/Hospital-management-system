@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Edit Doctor</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .box {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1976d2;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 12px;
+            background: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .back-btn {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            padding: 11px;
+            background: #555;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="box">
+
+        <h1>Edit Doctor</h1>
+
+        <form method="POST">
+
+            <label>Doctor Name</label>
+
+            <input
+                type="text"
+                name="name"
+                value="{{ doctor.name }}"
+                required
+            >
+
+            <label>Specialization</label>
+
+            <input
+                type="text"
+                name="specialization"
+                value="{{ doctor.specialization }}"
+                required
+            >
+
+            <label>Phone Number</label>
+
+            <input
+                type="text"
+                name="phone"
+                value="{{ doctor.phone or '' }}"
+            >
+
+            <label>Experience</label>
+
+            <input
+                type="number"
+                name="experience"
+                value="{{ doctor.experience or '' }}"
+                min="0"
+            >
+
+            <button type="submit">
+                Update Doctor
+            </button>
+
+        </form>
+
+        <a
+            href="{{ url_for('doctor_management') }}"
+            class="back-btn"
+        >
+            Back to Doctors
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>
