@@ -1621,7 +1621,7 @@ def delete_bed(bed_id):
 
     return redirect(url_for("home"))
 
-
+setup_database()
 # =========================================================
 # RUN APPLICATION
 # =========================================================
